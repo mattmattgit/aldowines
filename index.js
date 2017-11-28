@@ -12,25 +12,7 @@ app.use(bodyParser.json());
 
 // gcloud beta functions deploy aldiWebhook --stage-bucket staging.food-delivery-14fbe.appspot.com --trigger-http
 
-app.post('/index', (req, res) => {
-
-	let intent = req.body.result.metadata['intentName'];
-	console.log(`intent: ${intent}`)
-
-	if (intent === 'type') {
-		let type = req.body.result.parameters['type'].toLowerCase()
-		console.log(`type: ${type}`)
-
-		typeFile.typeCall(type).then( (output) => {
-			console.log(output)
-			res.setHeader('Content-Type', 'application/json');
-			res.send({ "speech": output, "displayText": output});
-		}).catch( (e) => {
-			console.log(e);
-			res.setHeader('Content-Type', 'application/json');
-			res.send(e);
-		});
-	} else if (intent === 'style') {
+app.post('/style', (req, res) => {
 		let style = req.body.result.parameters['style'].toLowerCase();
 		let color = '-';
 		if (req.body.result.parameters['color']) {
@@ -48,7 +30,9 @@ app.post('/index', (req, res) => {
 			res.setHeader('Content-Type', 'application/json');
 			res.send(e);
 		});
-	} else if (intent === 'specificWine') {
+});
+
+app.post('/specific', (req, res) => {
 		let wine = req.body.result.parameters['wine'].toLowerCase()
 		console.log(`wine: ${wine}`)
 
@@ -61,20 +45,7 @@ app.post('/index', (req, res) => {
 			res.setHeader('Content-Type', 'application/json');
 			res.send(e);
 		});
-	} else if (intent === 'price') {
-		let price = req.body.result.parameters['price']
-		console.log(`wine: ${price}`)
 
-		priceFile.priceCall(price).then( (output) => {
-			console.log(output)
-			res.setHeader('Content-Type', 'application/json');
-			res.send({ "speech": output, "displayText": output});
-		}).catch( (e) => {
-			console.log(e);
-			res.setHeader('Content-Type', 'application/json');
-			res.send(e);
-		});
-	}
 });
 
 app.listen(3000, () => {
